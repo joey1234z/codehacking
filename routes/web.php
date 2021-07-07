@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\adminUserController;
+use App\Http\Controllers\adminRoleController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,5 +23,13 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::get('/admin', function () {
+    return view('admin.index');
+    // @extendes('layouts.admin') in the admin index.blade
+});
+
+Route::resource('admin/users', adminUserController::class, ['as' => 'admin']);
+Route::resource('admin/roles', adminRoleController::class, ['as' => 'admin']);
 
 require __DIR__.'/auth.php';
