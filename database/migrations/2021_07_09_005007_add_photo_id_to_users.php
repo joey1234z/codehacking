@@ -15,6 +15,10 @@ class AddPhotoIdToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
+            $table->foreignId('photo_id')
+                ->nullable()    
+                ->constrained('photos')    
+                ->onDelete('cascade');    
         });
     }
 
@@ -27,6 +31,7 @@ class AddPhotoIdToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
+            $table->dropForeign(['photo_id']);
         });
     }
 }

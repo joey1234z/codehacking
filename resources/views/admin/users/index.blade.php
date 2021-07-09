@@ -24,6 +24,11 @@
 
         <tr>
             <td>{{$user->id}}</td>
+            <td>@if ($user->photo) 
+                    <img src="{{$user->photo->file}}" style="max-height:100px;">
+                @else
+                    <em>no image</em>
+                @endif</td>
             <td>{{$user->name}}</td>
             <td>{{$user->email}}</td>
             <td> 

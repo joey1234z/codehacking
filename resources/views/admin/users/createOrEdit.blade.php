@@ -36,7 +36,7 @@
 
 <div class="form-group">
     {!! Form::label('avatar', 'Avatar:') !!}
-    <div>{!! Form::file('avatar', ['class'=>'form-control']) !!}</div>
+    <div>{!! Form::file('photo', ['class'=>'form-control']) !!}</div>
 </div>
 
 <div class="form-group">

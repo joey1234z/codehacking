@@ -8,4 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Photo extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['file'];
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
+    public function getFileAttribute($value)
+    {
+        return url('images/photos/'.$value);
+    }
+    
 }

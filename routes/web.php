@@ -16,6 +16,7 @@ use App\Http\Controllers\adminRoleController;
 |
 */
 
+
 Route::get('/', function () {
     return view('welcome');
 });
