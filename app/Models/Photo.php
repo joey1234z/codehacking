@@ -18,7 +18,10 @@ class Photo extends Model
 
     public function getFileAttribute($value)
     {
-        return url('images/photos/'.$value);
+        if ($value) {
+            return url('images/photos/'.$value);
+        }
+        return null;
     }
     
 }

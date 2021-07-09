@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\UserAddRequest;
+use App\Http\Requests\UserEditRequest;
 use App\Models\Photo;
 use App\Models\Role;
 use App\Models\User;
@@ -32,14 +33,13 @@ class AdminUserController extends Controller
     {
         //
         $user = new User;
-        //$roleDropdownOptions = [''=>'-none-'];
-        //$roles = Role::all()->sortBy('name');
-        //foreach ($roles as $role) {
-        //    $roleDropdownOptions[$role->id] = $role->name;
-        //}
-        $roles = Role::pluck('name', 'id')->sortBy('name')->all();
-        $roleDropdownOptions = $roles;
-        return view('admin.users.createOrEdit', ['typeDisplay'=>'Create', 'user'=>$user, 'roleDropdownOptions'=>$roleDropdownOptions, 'role_id' => 0]);
+        $roleDropdownOptions = self::getRoleDropdownOptions();
+        return view('admin.users.createOrEdit', ['user'=>$user, 'roleDropdownOptions'=>$roleDropdownOptions]);
+    }
+
+    private static function getRoleDropdownOptions()
+    {
+        return Role::pluck('name', 'id')->sortBy('name')->all();
     }
 
     /**
@@ -48,7 +48,7 @@ class AdminUserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $request)
+    public function store(UserAddRequest $request)
     {
         $input = $request->all();
 
@@ -62,8 +62,9 @@ class AdminUserController extends Controller
             //dd($fileName);
             //$photo = $request->file('photo');
 
-            $photoModel = new Photo;
-            $photoModel->file = $fileName;
+            //$photoModel = new Photo;
+            //$photoModel->file = $fileName;
+            $photoModel = Photo::create(['file'=>$fileName]);
             //$input['photo_id'] = 
             $photoModel->save();
 
@@ -105,7 +106,9 @@ class AdminUserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $roleDropdownOptions = self::getRoleDropdownOptions();
+        return view('admin.users.createOrEdit', ['user'=>$user, 'roleDropdownOptions'=>$roleDropdownOptions]);
     }
 
     /**
@@ -115,9 +118,40 @@ class AdminUserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserEditRequest $request, $id)
     {
-        //
+        $input = $request->all();
+
+        //$user = User::create($input);
+        $user = User::findOrFail($id);
+        
+        if ($request->file('photo')) {
+            $photo = $request->file('photo');
+            $fileName = time().'_'.rand(10000,99999).'.'.$photo->getClientOriginalExtension();
+            //$filePath = $photo->storeAs('images/photos', $fileName, 'public');
+            $photo->move(public_path('images/photos'), $fileName);
+            //dd($fileName);
+            //$photo = $request->file('photo');
+
+            $photoModel = Photo::create(['file'=>$fileName]);
+            //$photoModel->file = $fileName;
+            //$input['photo_id'] = 
+            $photoModel->save();
+
+            //$input['photo_id'] = $photoModel->id;
+            //$user->photo()->associate($photoModel);
+            //$photoModel->user()->associate($user);
+
+
+
+            $user->photo()->associate($photoModel);
+            
+        }
+        if (!$request->password) {
+            unset($input['password']);
+        }
+        $user->update($input);
+        return redirect('/admin/users');
     }
 
     /**
