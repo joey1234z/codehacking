@@ -10,12 +10,10 @@
     <thead>
         <tr>
             <th scope="col">ID</th>
+            <th scope="col">User</th>
+            <th scope="col">Photo</th>
             <th scope="col">Title</th>
-            <!--<th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Role</th>
-            <th scope="col">Active?</th>-->
-            
+            <th scope="col">Category</th>
             <th scope="col">Created</th>
             <th scope="col">Edit</th>
             <th scope="col">Delete</th>
@@ -25,29 +23,26 @@
 @foreach ($posts as $post)
 
         <tr>
-            <td>{{$posts->id}}</td>
-            <td>@if ($user->photo) 
-                    <img src="{{$user->photo->file}}" style="max-height:100px;">
+            <td>{{$post->id}}</td>
+            <td>@if ($post->user) 
+                    {{$post->user->name}} ({{$post->user->email}})
+                @else
+                    <em>no user</em>
+                @endif</td>
+            <td>@if ($post->photo) 
+                    <img src="{{$post->photo->file}}" style="max-height:100px;">
                 @else
                     <em>no image</em>
                 @endif</td>
-            <td>{{$user->name}}</td>
-            <td>{{$user->email}}</td>
-            <td> 
-                @if ($user->role) 
-                    {{$user->role->name}}
+            <td>{{$post->title}}</td>
+            <td>@if ($post->category) 
+                    {{$post->category->name}}
                 @else
-                    <em>none</em>
-                @endif
-            </td>
-            <td>@if ($user->is_active) 
-                    <b>Active</b>
-                @else
-                    <em>Inactive</em>
+                    <em>no category</em>
                 @endif</td>
-            <td>{{$user->created_at->diffForHumans()}}</td>
-            <td><a href="{{route('admin.users.edit', $user)}}" class="btn btn-primary">edit</a></td>
-            <td>{!! Form::open(['method'=>'DELETE', 'route'=>['admin.users.destroy', $user]]) !!}
+            <td>{{$post->created_at->diffForHumans()}}</td>
+            <td><a href="{{route('admin.posts.edit', $post)}}" class="btn btn-primary">edit</a></td>
+            <td>{!! Form::open(['method'=>'DELETE', 'route'=>['admin.posts.destroy', $post]]) !!}
                 {!! Form::submit('Delete', ['class'=>'btn btn-danger']) !!}
             {!! Form::close() !!}</td>
         </tr>

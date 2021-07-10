@@ -9,7 +9,7 @@ if ($post->id) {
 ?>
 
 @section('content')
-<h1>{{$typeDisplay}} User</h1>
+<h1>{{$typeDisplay}} Post</h1>
 
 @include('includes.errorListDisplay')
 
@@ -21,40 +21,30 @@ if ($post->id) {
 @endif
 
 <div class="form-group">
-    {!! Form::label('name', 'Name:') !!}
-    {!! Form::text('name', $post->name, ['class'=>'form-control']) !!}
+    {!! Form::label('title', 'Title:') !!}
+    {!! Form::text('title', $post->title, ['class'=>'form-control']) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('email', 'Email:') !!}
-    {!! Form::email('email', $post->email, ['class'=>'form-control']) !!}
+    {!! Form::label('body', 'Body:') !!}
+    {!! Form::textarea('body', $post->body, ['class'=>'form-control', 'rows'=>5]) !!}
 </div>
 
 <div class="form-group">
-    {!! Form::label('is_active', 'Active?') !!}
-    <div>{!! Form::select('is_active', [1 => 'Active',  0 => 'inactive'], $post->is_active) !!}</div>
+    {!! Form::label('category_id', 'Category:') !!}
+    <div>{!! Form::select('category_id', [''=>'- none -'] + $categoryDropdownOptions, $post->category_id) !!}</div>
 </div>
 
 <div class="form-group">
-    {!! Form::label('password', 'Password:') !!}
-    {!! Form::password('password', ['class'=>'form-control']) !!}
-</div>
-
-<div class="form-group">
-    {!! Form::label('role_id', 'Role:') !!}
-    <div>{!! Form::select('role_id', [''=>'- none -'] + $roleDropdownOptions, $post->role_id) !!}</div>
-</div>
-
-<div class="form-group">
-    {!! Form::label('avatar', 'Avatar:') !!}
-    @if ($user->photo)
+    {!! Form::label('photo', 'Photo:') !!}
+    @if ($post->photo)
         <div style="padding-bottom:3px;"><img src="{{$post->photo->file}}" style="max-height:100px;" /></div>
     @endif
     <div>{!! Form::file('photo', ['class'=>'form-control']) !!}</div>
 </div>
 
 <div class="form-group">
-    {!! Form::submit($typeDisplay.' User', ['class'=>'btn btn-primary']) !!}
+    {!! Form::submit($typeDisplay.' Post', ['class'=>'btn btn-primary']) !!}
 </div>
 
 {!! Form::close() !!}

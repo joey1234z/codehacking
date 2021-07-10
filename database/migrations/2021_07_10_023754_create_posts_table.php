@@ -11,10 +11,26 @@ class CreatePostsTable extends Migration
      *
      * @return void
      */
+
+    protected $fillable = [
+        'category_id',
+        'photo_id',
+        'title',
+        'body',
+    ];
+
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')
+                ->constrained('users');
+            $table->foreignId('category_id')->nullable()
+                ->constrained('categories');
+            $table->foreignId('photo_id')->nullable()
+                ->constrained('photos'); 
+            $table->string('title');
+            $table->text('body');
             $table->timestamps();
         });
     }
