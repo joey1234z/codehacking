@@ -4,6 +4,12 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\adminUserController;
 use App\Http\Controllers\adminRoleController;
+use App\Http\Controllers\AdminPostController;
+use App\Http\Middleware\Admin;
+use Illuminate\Support\Facades\Auth;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +36,14 @@ Route::get('/admin', function () {
     // @extendes('layouts.admin') in the admin index.blade
 });
 
-Route::resource('admin/users', adminUserController::class, ['as' => 'admin']);
-Route::resource('admin/roles', adminRoleController::class, ['as' => 'admin']);
+//Route::group(['middleware'=>[Admin::class, Auth::class]], function(){
+Route::middleware(['middleware'=>'isAdmin'])->group(function(){
+    Route::resource('admin/users', adminUserController::class, ['as' => 'admin']);
+    Route::resource('admin/roles', adminRoleController::class, ['as' => 'admin']);
+    Route::resource('admin/posts', AdminPostController::class, ['as' => 'admin']);
+//});    
+});
+
+
 
 require __DIR__.'/auth.php';
