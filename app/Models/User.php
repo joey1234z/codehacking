@@ -18,6 +18,12 @@ class User extends Authenticatable
      */
 
 
+    protected $fillable = [
+        'name',
+        'email',
+        'password'
+    ];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -45,9 +51,9 @@ class User extends Authenticatable
         return $this->belongsTo(Photo::class);
     }
 
-    public function setPasswordAttribute($value){
-        $this->attributes['password'] = bcrypt($value);
-    }
+    //public function setPasswordAttribute($value){
+    //    $this->attributes['password'] = bcrypt($value);
+    //}
 
     public function isAdmin() {
         if ($this->role) {

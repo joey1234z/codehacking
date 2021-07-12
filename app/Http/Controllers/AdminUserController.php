@@ -52,6 +52,12 @@ class AdminUserController extends Controller
     {
         $input = $request->all();
 
+        if ($input['password']) {
+            $input['password'] = bcrypt($input['password']);
+        } else {
+            unset($input['password']);
+        }
+
         $user = User::create($input);
         
         if ($request->file('photo')) {
@@ -122,8 +128,16 @@ class AdminUserController extends Controller
     {
         $input = $request->all();
 
+        if ($input['password']) {
+            $input['password'] = bcrypt($input['password']);
+        } else {
+            unset($input['password']);
+        }
+
         //$user = User::create($input);
         $user = User::findOrFail($id);
+
+        
         
         if ($request->file('photo')) {
             $photo = $request->file('photo');

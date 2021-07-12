@@ -15,7 +15,7 @@ if ($post->id) {
 
 
 @if ($post->id)
-{!! Form::open(['method'=>'PATCH', 'route'=>['admin.posts.update', $user->id], 'files'=>true]) !!}
+{!! Form::open(['method'=>'PATCH', 'route'=>['admin.posts.update', $post->id], 'files'=>true]) !!}
 @else
 {!! Form::open(['method'=>'POST', 'route'=>'admin.posts.store', 'files'=>true]) !!}
 @endif

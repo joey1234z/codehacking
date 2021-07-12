@@ -10,4 +10,6 @@ class Category extends Model
     use HasFactory;
 
     protected $filter = ['name'];
+
+    protected $fillable = ['name', 'slug'];
 }

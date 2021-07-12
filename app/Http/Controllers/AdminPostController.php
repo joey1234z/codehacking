@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 class AdminPostController extends Controller
 {
 
-    private function getCategoryDropdownOptions()
+    private static function getCategoryDropdownOptions()
     {
         return Category::pluck('name', 'id')->sortBy('name')->all();
     }
@@ -104,6 +104,10 @@ class AdminPostController extends Controller
     public function edit($id)
     {
         //
+        $post = Post::findOrFail($id);
+        $categoryDropdownOptions = self::getCategoryDropdownOptions();
+        
+        return view('admin.posts.createOrEdit', ['post'=>$post, 'categoryDropdownOptions'=>$categoryDropdownOptions]); // , 'roleDropdownOptions'=>$roleDropdownOptions
     }
 
     /**
@@ -115,7 +119,34 @@ class AdminPostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Post::findOrFail($id);
+        
+        $input = $request->all();
+
+        $input['user_id'] = Auth::user()->id;
+
+        if (!$input['category_id']) {
+            unset($input['category_id']);
+        }
+        $post->update($input);
+        //dd($input);
+        if ($request->file('photo')) {
+            $photo = $request->file('photo');
+            $fileName = time().'_'.rand(10000,99999).'.'.$photo->getClientOriginalExtension();
+
+            $photo->move(public_path('images/photos'), $fileName);
+
+            $photoModel = Photo::create(['file'=>$fileName]);
+            $photoModel->save();
+
+            $post->photo()->associate($photoModel);
+            
+        }
+        $post->save();
+
+        Session::flash('message_success', 'post updated: '.$post->name);
+
+        return redirect('/admin/posts');
     }
 
     /**
@@ -126,6 +157,15 @@ class AdminPostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $postTitle = $post->title;
+        if ($post->photo) {
+            //dd($user->photo->getRawOriginal('file'));
+            unlink(public_path('images/photos/').$post->photo->getRawOriginal('file'));
+        }
+        $post->delete();
+        Session::flash('message_success','post deleted: '.$postTitle);
+        
+        return redirect('/admin/posts');
     }
 }
